@@ -1,0 +1,36 @@
+{
+  "name": "ico-tokensale",
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cryptol0g1c/ico-tokensale.git"
+  },
+  "scripts": {
+    "test:contracts": "truffle test",
+    "test:contracts:coverage": "./node_modules/.bin/solidity-coverage",
+    "lint:contracts": "./node_modules/solium/bin/solium.js -d contracts/",
+    "compile": "node ./utils/compile.js"
+  },
+  "author": "cryptologic",
+  "license": "ISC",
+  "dependencies": {
+    "zeppelin-solidity": "^1.7.0"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-preset-stage-3": "^6.17.0",
+    "babel-register": "^6.23.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-bignumber": "^2.0.2",
+    "chai": "^4.1.2",
+    "lodash": "^4.17.4",
+    "rimraf": "^2.6.2",
+    "solc": "^0.4.19",
+    "solidity-coverage": "^0.4.9",
+    "solium": "^1.0.5",
+    "truffle": "^4.0.4"
+  }
+}
