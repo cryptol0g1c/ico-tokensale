@@ -1,5 +1,5 @@
-const BSGTokenCrowdsale = artifacts.require('BSGTokenCrowdsale');
-const BSGToken = artifacts.require('BSGToken');
+const GenericTokenCrowdsale = artifacts.require('GenericTokenCrowdsale');
+const GenericToken = artifacts.require('GenericToken');
 
 const utils = require('./utils/index');
 const { BigNumber } = web3;
@@ -10,7 +10,7 @@ const should = require('chai')
 import { increaseTimeTo, duration } from 'zeppelin-solidity/test/helpers/increaseTime';
 import latestTime from 'zeppelin-solidity/test/helpers/latestTime';
 
-contract('BSGTokenCrowdsale', addresses => {
+contract('GenericTokenCrowdsale', addresses => {
   let crowdsale;
   let token;
   let _openingTime;
@@ -29,7 +29,7 @@ contract('BSGTokenCrowdsale', addresses => {
     _openingTime = await latestTime(web3) + duration.weeks(1);
     _closingTime = _openingTime + duration.weeks(1);
 
-    crowdsale = await BSGTokenCrowdsale.new(
+    crowdsale = await GenericTokenCrowdsale.new(
       _rate,
       _wallet,
       _cap,
