@@ -9,8 +9,7 @@
   "scripts": {
     "test:contracts": "truffle test",
     "test:contracts:coverage": "./node_modules/.bin/solidity-coverage",
-    "lint:contracts": "./node_modules/solium/bin/solium.js -d contracts/",
-    "compile": "node ./utils/compile.js"
+    "lint:contracts": "./node_modules/solium/bin/solium.js -d contracts/"
   },
   "author": "cryptologic",
   "license": "ISC",

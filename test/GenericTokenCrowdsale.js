@@ -20,6 +20,7 @@ contract('GenericTokenCrowdsale', addresses => {
   const _rate = new BigNumber(2);
   const _wallet = addresses[0];
   const _cap = utils.toEther(20);
+  const _isLocked = false;
   
   // accounts
   const _buyer = addresses[1];
@@ -34,7 +35,8 @@ contract('GenericTokenCrowdsale', addresses => {
       _wallet,
       _cap,
       _openingTime,
-      _closingTime
+      _closingTime,
+      _isLocked
     );
   });
 
