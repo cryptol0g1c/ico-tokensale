@@ -10,7 +10,7 @@ contract LockedCrowdsale is Crowdsale, Ownable {
   event IsLocked(bool);
 
   modifier isUnlocked {
-    require(!isLocked);
+    require(isLocked == false);
     _;
   }
 
