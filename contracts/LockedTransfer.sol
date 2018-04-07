@@ -17,7 +17,7 @@ contract LockedTransfer is Crowdsale, Ownable {
     Function called by the owner to unlock token transfer for contributors.
     */
   function unlockTransfer() public onlyOwner returns (bool) {
-    require(block.timestamp >= unlockTime);
+    require(isLocked && block.timestamp >= unlockTime);
     isLocked = false;
     emit unlocked(true);
     return true;
