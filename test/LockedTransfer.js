@@ -1,6 +1,6 @@
-const LockedCrowdsale = artifacts.require('LockedCrowdsale');
+const LockedCrowdsale = artifacts.require('LockedTransfer');
 
-contract('LockedCrowdsale', addresses => {
+contract('LockedTransfer', addresses => {
   let lockedCrowdsale;
 
   let notOwnerAddress = addresses[1];
@@ -9,7 +9,7 @@ contract('LockedCrowdsale', addresses => {
     lockedCrowdsale = await LockedCrowdsale.new(false);
   });
 
-  describe('LockedCrowdsale', async() => {
+  describe('LockedTransfer', async() => {
     
     it('should toogle isLocked if the sender is the owner', async() => {
       // (await lockedCrowdsale.toggleLocked(true));
