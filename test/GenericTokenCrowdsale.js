@@ -23,7 +23,9 @@ contract('GenericTokenCrowdsale', addresses => {
   
   // accounts
   const _buyer = addresses[1];
-  const nonWhitelistedBuyer = addresses[2];
+  const _nonWhitelistedBuyer = addresses[2];
+  const _to = addresses[3];
+  const _too = addresses[4];
 
   beforeEach(async() => {
     _openingTime = await latestTime(web3) + duration.weeks(1);
@@ -92,10 +94,38 @@ contract('GenericTokenCrowdsale', addresses => {
       let value = utils.toEther(10);
 
       try {
-        await crowdsale.buyTokens(nonWhitelistedBuyer, {value, from: _buyer});
+        await crowdsale.buyTokens(_nonWhitelistedBuyer, {value, from: _buyer});
       } catch (error) {
         utils.assertRevert(error);
       }
+    });
+  });
+
+  describe('Locked', () => {
+    beforeEach(async() => {
+      await increaseTimeTo(_openingTime);
+      await crowdsale.addToWhitelist(_buyer);
+    });      
+
+    it('should not allow user to transfer if transfer is locked', async() => {
+      await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
+      
+      await increaseTimeTo(_unlockTime + duration.minutes(1));
+      await crowdsale.unlockTransfer();
+
+      
+
+      await crowdsale.approve(_to, 10, {from: _buyer});
+
+      console.log('--- ', await crowdsale.allowance(_buyer, _to));
+      
+      let asd = await crowdsale.transferFrom(_buyer, _too, 1, {from: _to});
+      console.log(asd);
+      
+    });
+
+    it('should allow user to transfer', () => {
+
     });
   });
 
@@ -109,7 +139,7 @@ contract('GenericTokenCrowdsale', addresses => {
       let value = utils.toEther(10);
 
       try {
-        await crowdsale.buyTokens(nonWhitelistedBuyer, {value, from: _buyer});
+        await crowdsale.buyTokens(_nonWhitelistedBuyer, {value, from: _buyer});
       } catch (error) {
         utils.assertRevert(error);
       }
@@ -128,7 +158,7 @@ contract('GenericTokenCrowdsale', addresses => {
       let value = utils.toEther(10);
   
       try {
-        await crowdsale.buyTokens(nonWhitelistedBuyer, {value, from: _buyer});
+        await crowdsale.buyTokens(_nonWhitelistedBuyer, {value, from: _buyer});
       } catch (error) {
         utils.assertRevert(error);
       }
