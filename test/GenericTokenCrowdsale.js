@@ -1,5 +1,4 @@
 const GenericTokenCrowdsale = artifacts.require('GenericTokenCrowdsale');
-const GenericToken = artifacts.require('GenericToken');
 
 const utils = require('./utils/index');
 const { BigNumber } = web3;
@@ -13,14 +12,14 @@ import latestTime from 'zeppelin-solidity/test/helpers/latestTime';
 contract('GenericTokenCrowdsale', addresses => {
   let crowdsale;
   let token;
-  let _openingTime;
-  let _closingTime;
 
   // initial parameters
   const _rate = new BigNumber(2);
   const _wallet = addresses[0];
   const _cap = utils.toEther(20);
-  const _isLocked = false;
+  let _openingTime;
+  let _closingTime;
+  let _unlockTime;
   
   // accounts
   const _buyer = addresses[1];
@@ -29,6 +28,7 @@ contract('GenericTokenCrowdsale', addresses => {
   beforeEach(async() => {
     _openingTime = await latestTime(web3) + duration.weeks(1);
     _closingTime = _openingTime + duration.weeks(1);
+    _unlockTime = _closingTime + duration.weeks(1);
 
     crowdsale = await GenericTokenCrowdsale.new(
       _rate,
@@ -36,7 +36,7 @@ contract('GenericTokenCrowdsale', addresses => {
       _cap,
       _openingTime,
       _closingTime,
-      _isLocked
+      _unlockTime
     );
   });
 
@@ -139,12 +139,12 @@ contract('GenericTokenCrowdsale', addresses => {
     
     it('should return false if crowdsale is not open', async() => {
       (await crowdsale.isOpen()).should.equal(false);
-    })
+    });
 
     it('should return true if crowdsale is open', async() => {
       await increaseTimeTo(_openingTime + duration.minutes(1));
 
       (await crowdsale.isOpen()).should.equal(true);
-    })
-  })
+    });
+  });
 });
