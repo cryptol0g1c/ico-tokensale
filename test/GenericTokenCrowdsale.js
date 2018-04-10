@@ -1,3 +1,4 @@
+const GenericToken = artifacts.require('GenericToken');
 const GenericTokenCrowdsale = artifacts.require('GenericTokenCrowdsale');
 
 const utils = require('./utils/index');
@@ -8,6 +9,7 @@ const should = require('chai')
   .should();
 import { increaseTimeTo, duration } from 'zeppelin-solidity/test/helpers/increaseTime';
 import latestTime from 'zeppelin-solidity/test/helpers/latestTime';
+import { advanceBlock } from 'zeppelin-solidity/test/helpers/advanceToBlock';
 
 contract('GenericTokenCrowdsale', addresses => {
   let crowdsale;
@@ -22,24 +24,31 @@ contract('GenericTokenCrowdsale', addresses => {
   let _unlockTime;
   
   // accounts
-  const _buyer = addresses[1];
-  const _nonWhitelistedBuyer = addresses[2];
-  const _to = addresses[3];
-  const _too = addresses[4];
+  const _owner = addresses[1];
+  const _buyer = addresses[2];
+  const _nonWhitelistedBuyer = addresses[3];
+  const _to = addresses[4];
+  const _nonOwner = addresses[5];
+
+  before(async () => {
+    await advanceBlock();
+  });
 
   beforeEach(async() => {
     _openingTime = await latestTime(web3) + duration.weeks(1);
     _closingTime = _openingTime + duration.weeks(1);
     _unlockTime = _closingTime + duration.weeks(1);
 
+    token = await GenericToken.new(_unlockTime, {from: _owner});
     crowdsale = await GenericTokenCrowdsale.new(
       _rate,
       _wallet,
       _cap,
       _openingTime,
       _closingTime,
-      _unlockTime
+      token.address
     );
+    await token.transferOwnership(crowdsale.address, {from: _owner});
   });
 
   describe('Crowdsale', () => {
@@ -57,14 +66,14 @@ contract('GenericTokenCrowdsale', addresses => {
   describe('for whiteliste\'d address and with correct startTime', () => {
     beforeEach(async() => {
       await increaseTimeTo(_openingTime);
-      await crowdsale.addToWhitelist(_buyer)
+      await crowdsale.addToWhitelist(_buyer);
     });
     
     it('should allow user to buy', async() => {
       let value = utils.toEther(10);
-  
-      await crowdsale.buyTokens(_buyer, {value, from: _buyer});
-      (await crowdsale.balanceOf(_buyer)).should.bignumber.equal(value.times(_rate));
+
+      await crowdsale.buyTokens(_buyer, {value, from: _buyer});      
+      (await token.balanceOf(_buyer)).should.bignumber.equal(value.times(_rate));
     });
 
     it('should allow user to buy if capped is not reached', async() => {
@@ -105,27 +114,43 @@ contract('GenericTokenCrowdsale', addresses => {
     beforeEach(async() => {
       await increaseTimeTo(_openingTime);
       await crowdsale.addToWhitelist(_buyer);
-    });      
-
-    it('should not allow user to transfer if transfer is locked', async() => {
-      await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
-      
-      await increaseTimeTo(_unlockTime + duration.minutes(1));
-      await crowdsale.unlockTransfer();
-
-      
-
-      await crowdsale.approve(_to, 10, {from: _buyer});
-
-      console.log('--- ', await crowdsale.allowance(_buyer, _to));
-      
-      let asd = await crowdsale.transferFrom(_buyer, _too, 1, {from: _to});
-      console.log(asd);
-      
     });
 
-    it('should allow user to transfer', () => {
+    it('should not unlock if sender is not the owner', async() => {
+      await increaseTimeTo(_unlockTime + duration.minutes(1));
 
+      try {
+        await crowdsale.unlockTransfer({from: _nonOwner});
+      } catch (error) {
+        utils.assertRevert(error);
+      }
+    })
+
+    it('should not allow user to transfer if transfer is locked', async() => {
+      let value = utils.toEther(1).times(_rate);
+      
+      await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
+      
+      try {
+        await token.approve(_to, value, {from: _buyer});
+        await token.transferFrom(_buyer, _to, value, {from: _to});
+      } catch (error) {
+        utils.assertRevert(error);
+      }
+    });
+
+    it('should allow user to transfer', async() => {
+      let value = utils.toEther(1).times(_rate);
+      let remaining = utils.toEther(9).times(_rate);
+      
+      await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
+      await increaseTimeTo(_unlockTime + duration.minutes(1));
+      await crowdsale.unlockTransfer();
+      await token.approve(_to, value, {from: _buyer});
+      await token.transferFrom(_buyer, _to, value, {from: _to});
+      
+      (await token.balanceOf(_to)).should.bignumber.equal(value);
+      (await token.balanceOf(_buyer)).should.bignumber.equal(remaining);
     });
   });
 
