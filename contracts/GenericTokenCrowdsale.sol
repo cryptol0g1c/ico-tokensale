@@ -1,12 +1,12 @@
 pragma solidity ^0.4.18;
 
-import './GenericToken.sol';
-import 'zeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
-import 'zeppelin-solidity/contracts/crowdsale/Crowdsale.sol';
-import 'zeppelin-solidity/contracts/crowdsale/validation/WhitelistedCrowdsale.sol';
-import 'zeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol';
-import 'zeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol';
-import 'zeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol';
+import "./GenericToken.sol";
+import "zeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
+import "zeppelin-solidity/contracts/crowdsale/Crowdsale.sol";
+import "zeppelin-solidity/contracts/crowdsale/validation/WhitelistedCrowdsale.sol";
+import "zeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol";
+import "zeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol";
+import "zeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol";
 
 contract GenericTokenCrowdsale is Crowdsale, MintedCrowdsale, WhitelistedCrowdsale, CappedCrowdsale, TimedCrowdsale {
   
@@ -31,11 +31,4 @@ contract GenericTokenCrowdsale is Crowdsale, MintedCrowdsale, WhitelistedCrowdsa
     closingTime = _closingTime;
   }
 
-  function unlockTransfer() public onlyOwner {
-    token.unlockTransfer();
-  }
-
-  function isOpen() public view returns (bool) {
-    return now >= openingTime && now <= closingTime;
-  }
 }
