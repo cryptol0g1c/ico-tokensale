@@ -1,8 +1,9 @@
 pragma solidity ^0.4.18;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 
-contract LockedToken {
+contract LockedToken is StandardToken, Ownable {
 
   bool public isLocked = true;
   uint256 public unlockTime;
@@ -17,9 +18,10 @@ contract LockedToken {
   /**
   * @dev Function constructor
   */
-  function LockedContract(uint256 _unlockTime) public {
+  function LockedToken(uint256 _unlockTime) public {
     unlockTime = _unlockTime;
   }
+  
   /**
   Function called by the owner to unlock token transfer for contributors.
   */
@@ -27,6 +29,16 @@ contract LockedToken {
     require(isLocked && block.timestamp >= unlockTime);
     isLocked = false;
     emit Unlocked(true);
+    return true;
+  }
+
+  function approve(address _spender, uint256 _value) public isUnlocked returns (bool) {
+    super.approve(_spender, _value);
+    return true;
+  }
+
+  function transfer(address _to, uint256 _value) public isUnlocked returns (bool) {
+    super.transfer(_to, _value);
     return true;
   }
 }
