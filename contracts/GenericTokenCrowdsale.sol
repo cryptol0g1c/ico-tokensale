@@ -1,6 +1,7 @@
 pragma solidity ^0.4.18;
 
 import "./GenericToken.sol";
+import "./LockedCrowdsale.sol";
 import "zeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
 import "zeppelin-solidity/contracts/crowdsale/Crowdsale.sol";
 import "zeppelin-solidity/contracts/crowdsale/validation/WhitelistedCrowdsale.sol";
@@ -8,11 +9,9 @@ import "zeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol";
 import "zeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol";
 import "zeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol";
 
-contract GenericTokenCrowdsale is Crowdsale, MintedCrowdsale, WhitelistedCrowdsale, CappedCrowdsale, TimedCrowdsale {
+contract GenericTokenCrowdsale is Crowdsale, MintedCrowdsale, WhitelistedCrowdsale, CappedCrowdsale, TimedCrowdsale, LockedCrowdsale {
   
   GenericToken token;
-  uint256 public openingTime;
-  uint256 public closingTime;
 
   function GenericTokenCrowdsale(
     uint256 _rate, 
@@ -27,8 +26,5 @@ contract GenericTokenCrowdsale is Crowdsale, MintedCrowdsale, WhitelistedCrowdsa
   TimedCrowdsale(_openingTime, _closingTime)
   {
     token = _token;
-    openingTime = _openingTime;
-    closingTime = _closingTime;
   }
-
 }

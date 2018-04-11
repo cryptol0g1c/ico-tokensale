@@ -124,16 +124,35 @@ contract('GenericTokenCrowdsale', addresses => {
       } catch (error) {
         utils.assertRevert(error);
       }
-    })
+    });
 
-    it('should not allow user to transfer if transfer is locked', async() => {
+    it('should unlock if sender is the owner', async() => {
+      await increaseTimeTo(_unlockTime + duration.minutes(1));
+      await crowdsale.unlockTransfer();
+
+      (await token.isLocked()).should.equal(false);
+    });
+
+    it('should not allow user to transfer if is locked', async() => {
+      let value = utils.toEther(1).times(_rate);
+      
+      await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
+      
+      try {
+        await token.transfer(_to, value, {from: _buyer});
+      } catch (error) {
+        utils.assertRevert(error);
+      }
+    });
+
+
+    it('should not allow user to approve if is locked', async() => {
       let value = utils.toEther(1).times(_rate);
       
       await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
       
       try {
         await token.approve(_to, value, {from: _buyer});
-        await token.transferFrom(_buyer, _to, value, {from: _to});
       } catch (error) {
         utils.assertRevert(error);
       }
@@ -146,11 +165,17 @@ contract('GenericTokenCrowdsale', addresses => {
       await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
       await increaseTimeTo(_unlockTime + duration.minutes(1));
       await crowdsale.unlockTransfer();
-      await token.approve(_to, value, {from: _buyer});
-      await token.transferFrom(_buyer, _to, value, {from: _to});
+      await token.transfer(_to, value, {from: _buyer});
+    });
+
+    it('should allow user to approve', async() => {
+      let value = utils.toEther(1).times(_rate);
+      let remaining = utils.toEther(9).times(_rate);
       
-      (await token.balanceOf(_to)).should.bignumber.equal(value);
-      (await token.balanceOf(_buyer)).should.bignumber.equal(remaining);
+      await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
+      await increaseTimeTo(_unlockTime + duration.minutes(1));
+      await crowdsale.unlockTransfer();
+      await token.approve(_to, value, {from: _buyer});
     });
   });
 
@@ -187,19 +212,6 @@ contract('GenericTokenCrowdsale', addresses => {
       } catch (error) {
         utils.assertRevert(error);
       }
-    });
-  });
-
-  describe('isOpen', () => {
-    
-    it('should return false if crowdsale is not open', async() => {
-      (await crowdsale.isOpen()).should.equal(false);
-    });
-
-    it('should return true if crowdsale is open', async() => {
-      await increaseTimeTo(_openingTime + duration.minutes(1));
-
-      (await crowdsale.isOpen()).should.equal(true);
     });
   });
 });
