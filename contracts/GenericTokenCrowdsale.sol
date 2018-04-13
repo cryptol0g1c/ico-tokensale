@@ -14,10 +14,10 @@ contract GenericTokenCrowdsale is Crowdsale, MintedCrowdsale, WhitelistedCrowdsa
   GenericToken token;
 
   function GenericTokenCrowdsale(
-    uint256 _rate, 
-    address _wallet, 
-    uint256 _cap, 
-    uint256 _openingTime, 
+    uint256 _rate,
+    address _wallet,
+    uint256 _cap,
+    uint256 _openingTime,
     uint256 _closingTime,
     GenericToken _token
   ) public
