@@ -12,7 +12,7 @@ const duration = {
 
 module.exports = (deployer, network, accounts) => {
   const _rate = new web3.BigNumber(2);
-  const _wallet = accounts[0];
+  const _wallet = '0x8e5095532979FfDa5e9Dc692628A3Fa032d3b47C';
   const _cap = new web3.BigNumber(web3.toWei(20, 'ether'));
   const now = web3.eth.getBlock('latest').timestamp;
   const _openingTime = now + duration.weeks(1);

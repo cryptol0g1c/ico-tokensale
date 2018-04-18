@@ -11,8 +11,8 @@
     "test:contracts": "truffle test",
     "test:contracts:coverage": "./node_modules/.bin/solidity-coverage",
     "lint:contracts": "./node_modules/solium/bin/solium.js -d contracts/",
-    "compile:token": "truffle-flattener GenericToken.sol > GenericToken.sol",
-    "compile:crowdsale": "truffle-flattener GenericTokenCrowdsale.sol > GenericTokenCrowdsale.sol"
+    "compile:token": "truffle-flattener ./contracts/GenericToken.sol > GenericToken.sol",
+    "compile:crowdsale": "truffle-flattener ./contracts/GenericTokenCrowdsale.sol > GenericTokenCrowdsale.sol"
   },
   "author": "cryptologic",
   "license": "ISC",
