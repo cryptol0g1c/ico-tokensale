@@ -17,6 +17,12 @@ module.exports = {
       port: 8545,
       gas: 0xfffffffffff,
       gasPrice: 0x01
+    },
+    ropsten: {
+      host: "localhost",
+      network_id: 3,
+      port: 8545,
+      gas: 2900000
     }
   },
   mocha: {
