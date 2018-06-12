@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "truffle-flattener": "^1.2.5",
-    "zeppelin-solidity": "^1.7.0"
+    "zeppelin-solidity": "^1.10.0"
   },
   "devDependencies": {
     "babel-polyfill": "^6.26.0",
@@ -34,6 +34,6 @@
     "solc": "^0.4.19",
     "solidity-coverage": "^0.4.9",
     "solium": "^1.0.5",
-    "truffle": "^4.0.4"
+    "truffle": "^4.1.11"
   }
 }

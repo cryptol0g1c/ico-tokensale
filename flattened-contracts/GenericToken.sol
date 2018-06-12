@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 // File: zeppelin-solidity/contracts/ownership/Ownable.sol
 
