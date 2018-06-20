@@ -22,7 +22,7 @@ contract('GenericTokenCrowdsale', addresses => {
   let _openingTime;
   let _closingTime;
   let _unlockTime;
-  
+
   // accounts
   const _owner = addresses[1];
   const _buyer = addresses[2];
@@ -39,7 +39,7 @@ contract('GenericTokenCrowdsale', addresses => {
     _closingTime = _openingTime + duration.weeks(1);
     _unlockTime = _closingTime + duration.weeks(1);
 
-    token = await GenericToken.new(_unlockTime, {from: _owner});
+    token = await GenericToken.new(_unlockTime, 'testcoin', 'test', 18, {from: _owner});
     crowdsale = await GenericTokenCrowdsale.new(
       _rate,
       _wallet,
@@ -52,14 +52,14 @@ contract('GenericTokenCrowdsale', addresses => {
   });
 
   describe('Crowdsale', () => {
-    
+
     it('should initialize with 0 tokens', async() => {
       (await crowdsale.weiRaised()).should.bignumber.equal(0);
     });
-  
+
     it('should add address to whitelist', async() => {
       await crowdsale.addToWhitelist(_buyer);
-      (await crowdsale.whitelist(_buyer)).should.equal(true);    
+      (await crowdsale.whitelist(_buyer)).should.equal(true);
     });
   });
 
@@ -68,11 +68,11 @@ contract('GenericTokenCrowdsale', addresses => {
       await increaseTimeTo(_openingTime);
       await crowdsale.addToWhitelist(_buyer);
     });
-    
+
     it('should allow user to buy', async() => {
       let value = utils.toEther(10);
 
-      await crowdsale.buyTokens(_buyer, {value, from: _buyer});      
+      await crowdsale.buyTokens(_buyer, {value, from: _buyer});
       (await token.balanceOf(_buyer)).should.bignumber.equal(value.times(_rate));
     });
 
@@ -98,7 +98,7 @@ contract('GenericTokenCrowdsale', addresses => {
     beforeEach(async() => {
       await increaseTimeTo(_openingTime);
     });
-    
+
     it('should revert transaction', async() => {
       let value = utils.toEther(10);
 
@@ -135,9 +135,9 @@ contract('GenericTokenCrowdsale', addresses => {
 
     it('should not allow user to transfer if is locked', async() => {
       let value = utils.toEther(1).times(_rate);
-      
+
       await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
-      
+
       try {
         await token.transfer(_to, value, {from: _buyer});
       } catch (error) {
@@ -148,9 +148,9 @@ contract('GenericTokenCrowdsale', addresses => {
 
     it('should not allow user to approve if is locked', async() => {
       let value = utils.toEther(1).times(_rate);
-      
+
       await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
-      
+
       try {
         await token.approve(_to, value, {from: _buyer});
       } catch (error) {
@@ -161,7 +161,7 @@ contract('GenericTokenCrowdsale', addresses => {
     it('should allow user to transfer', async() => {
       let value = utils.toEther(1).times(_rate);
       let remaining = utils.toEther(9).times(_rate);
-      
+
       await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
       await increaseTimeTo(_unlockTime + duration.minutes(1));
       await crowdsale.unlockTransfer();
@@ -171,7 +171,7 @@ contract('GenericTokenCrowdsale', addresses => {
     it('should allow user to approve', async() => {
       let value = utils.toEther(1).times(_rate);
       let remaining = utils.toEther(9).times(_rate);
-      
+
       await crowdsale.buyTokens(_buyer, {value: utils.toEther(10), from: _buyer});
       await increaseTimeTo(_unlockTime + duration.minutes(1));
       await crowdsale.unlockTransfer();
@@ -184,7 +184,7 @@ contract('GenericTokenCrowdsale', addresses => {
     beforeEach(async() => {
       await crowdsale.addToWhitelist(_buyer)
     });
-    
+
     it('should revert transaction', async() => {
       let value = utils.toEther(10);
 
@@ -195,18 +195,18 @@ contract('GenericTokenCrowdsale', addresses => {
       }
     });
   });
-  
+
   describe('if closingTime < now', () => {
 
     beforeEach(async() => {
       await crowdsale.addToWhitelist(_buyer)
     });
-    
+
     it('should revert transaction', async() => {
       await increaseTimeTo(_closingTime + duration.minutes(1));
-  
+
       let value = utils.toEther(10);
-  
+
       try {
         await crowdsale.buyTokens(_nonWhitelistedBuyer, {value, from: _buyer});
       } catch (error) {

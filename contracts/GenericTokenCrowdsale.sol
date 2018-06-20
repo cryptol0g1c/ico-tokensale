@@ -10,10 +10,10 @@ import "zeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol";
 import "zeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol";
 
 contract GenericTokenCrowdsale is Crowdsale, MintedCrowdsale, WhitelistedCrowdsale, CappedCrowdsale, TimedCrowdsale, LockedCrowdsale {
-  
+
   GenericToken token;
 
-  function GenericTokenCrowdsale(
+  constructor(
     uint256 _rate,
     address _wallet,
     uint256 _cap,
