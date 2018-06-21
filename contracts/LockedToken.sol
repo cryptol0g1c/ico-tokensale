@@ -18,10 +18,10 @@ contract LockedToken is StandardToken, Ownable {
   /**
   * @dev Function constructor
   */
-  function LockedToken(uint256 _unlockTime) public {
+  constructor(uint256 _unlockTime) public {
     unlockTime = _unlockTime;
   }
-  
+
   /**
   Function called by the owner to unlock token transfer for contributors.
   */

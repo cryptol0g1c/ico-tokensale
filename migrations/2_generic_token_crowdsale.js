@@ -17,9 +17,9 @@ module.exports = (deployer, network, accounts) => {
   const now = web3.eth.getBlock('latest').timestamp;
   const _openingTime = now + duration.weeks(1);
   const _closingTime = _openingTime + duration.weeks(1);
-  const _unlockTime = _closingTime + duration.weeks(1);  
+  const _unlockTime = _closingTime + duration.weeks(1);
 
-  deployer.deploy(GenericToken, _unlockTime).then(async (tx) => {
+  deployer.deploy(GenericToken, _unlockTime, 'testcoin', 'test', 18).then(async (tx) => {
     let _tokenAddress = GenericToken.address;
     await deployer.deploy(GenericTokenCrowdsale, _rate, _wallet, _cap, _openingTime, _closingTime, _tokenAddress);
   });

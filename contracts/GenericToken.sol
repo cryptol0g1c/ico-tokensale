@@ -4,9 +4,13 @@ import "./LockedToken.sol";
 import "zeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
 
 contract GenericToken is MintableToken, LockedToken {
-  string public constant NAME = 'GenericToken';
-  string public constant SYMBOL = 'gt';
-  uint256 public constant DECIMALS = 18;
+  string public NAME;
+  string public SYMBOL;
+  uint256 public DECIMALS;
 
-  function GenericToken(uint256 _unlockTime) public LockedToken(_unlockTime) {}
+  constructor(uint256 _unlockTime, string _name, string _symbol, uint256 _decimals) public LockedToken(_unlockTime) {
+    NAME = _name;
+    SYMBOL = _symbol;
+    DECIMALS = _decimals;
+  }
 }
